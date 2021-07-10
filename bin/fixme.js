@@ -5,7 +5,7 @@ const chalk        = require('chalk');
 const eventStream  = require('event-stream');
 const fs           = require('fs');
 const isBinaryFile = require('isbinaryfile');
-const minimatch    = require('minimatch');
+const picomatch    = require('picomatch');
 const readdirp     = require('readdirp');
 
 let ignoredDirectories = ['node_modules/**', '.git/**', '.hg/**'];
@@ -71,10 +71,7 @@ function fileFilterer (fileInformation) {
   let shouldIgnoreFile      = true;
   let letTheFileThrough = true;
 
-  ignoredDirectories.forEach(function (directoryPattern) {
-    if (shouldIgnoreDirectory) return;
-    shouldIgnoreDirectory = minimatch(fileInformation.path, directoryPattern, { dot: true });
-  });
+  shouldIgnoreDirectory = picomatch.isMatch(fileInformation.path, ignoredDirectories, { dot: true });
 
   if (!shouldIgnoreDirectory) {
     filesToScan.forEach(function (filePattern) {
