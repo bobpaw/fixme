@@ -74,11 +74,7 @@ function fileFilterer (fileInformation) {
   shouldIgnoreDirectory = picomatch.isMatch(fileInformation.path, ignoredDirectories, { dot: true });
 
   if (!shouldIgnoreDirectory) {
-    filesToScan.forEach(function (filePattern) {
-      if (!shouldIgnoreFile) return;
-
-      shouldIgnoreFile = !(minimatch(fileInformation.path, filePattern));
-    });
+    shouldIgnoreFile = !picomatch.isMatch(fileInformation.path, filesToScan);
   }
 
   letTheFileThrough = !(shouldIgnoreDirectory || (!shouldIgnoreDirectory && shouldIgnoreFile));
