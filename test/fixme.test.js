@@ -37,12 +37,18 @@ describe('fixme', () => {
     describe('file_patterns', () => {
       it('should accept an array');
       it('should accept a string');
-      it('should not accept a number');
+      it('should not accept a number', () => {
+        expect(() => fixme({file_patterns: 15})).to.throw(TypeError, /file_patterns/);
+      });
     });
     describe('file_encoding', () => {
       it('should accept a string');
-      it('should not accept an array');
-      it('should not accept a number');
+      it('should not accept an array', () => {
+        expect(() => fixme({file_encoding: [0, 1, 2]})).to.throw(TypeError, /file_encoding/);
+      });
+      it('should not accept a number', () => {
+        expect(() => fixme({file_encoding: 10})).to.throw(TypeError, /file_encoding/);
+      });
       it('should do something?');
     });
     describe('line_length_limit', () => {
