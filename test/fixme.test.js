@@ -29,7 +29,7 @@ describe('fixme', () => {
       it('should not accept a number', () => {
         options.path = 4;
 
-        expect(fixme(options)).to.throw(TypeError);
+        expect(() => fixme(options)).to.throw(TypeError, /path/);
       });
     });
     describe('ignored_directories', () => {
@@ -43,6 +43,9 @@ describe('fixme', () => {
       it('should not accept a number');
     });
     describe('file_encoding', () => {
+      it('should accept a string');
+      it('should not accept an array');
+      it('should not accept a number');
       it('should do something?');
     });
     describe('line_length_limit', () => {
@@ -50,7 +53,7 @@ describe('fixme', () => {
       it('should not accept negative values', () => {
         options.line_length_limit = -40;
 
-        expect(fixme(options)).to.throw(RangeError);
+        expect(() => fixme(options)).to.throw(RangeError, /line_length_limit/);
       });
     });
     describe('skip', () => {

@@ -360,6 +360,7 @@ function parseUserOptionsAndScan (options, done) {
     }
 
     if (options.line_length_limit) {
+      if (options.line_length_limit <= 0) throw new RangeError('line_length_limit must be greater than 0');
       args.line_length_limit = options.line_length_limit;
     }
 
