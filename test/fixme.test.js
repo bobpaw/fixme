@@ -13,11 +13,8 @@ chalk.level = 0;
 
 describe('fixme', () => {
   describe('options', () => {
-    let options;
-    
     beforeEach(() => {
       sinon.stub(console, 'log');
-      options = {};
     });
 
     afterEach(() => {
@@ -27,15 +24,15 @@ describe('fixme', () => {
     describe('path', () => {
       it('should accept a string');
       it('should not accept a number', () => {
-        options.path = 4;
-
-        expect(() => fixme(options)).to.throw(TypeError, /path/);
+        expect(() => fixme({path: 4})).to.throw(TypeError, /path/);
       });
     });
     describe('ignored_directories', () => {
       it('should accept an array');
       it('should accept a string');
-      it('should not except a number');
+      it('should not accept a number', () => {
+        expect(() => fixme({ignored_directories: 30})).to.throw(TypeError, /ignored_directories/);
+      });
     });
     describe('file_patterns', () => {
       it('should accept an array');
@@ -51,9 +48,7 @@ describe('fixme', () => {
     describe('line_length_limit', () => {
       it('should stop after the limit');
       it('should not accept negative values', () => {
-        options.line_length_limit = -40;
-
-        expect(() => fixme(options)).to.throw(RangeError, /line_length_limit/);
+        expect(() => fixme({line_length_limit: -40})).to.throw(RangeError, /line_length_limit/);
       });
     });
     describe('skip', () => {

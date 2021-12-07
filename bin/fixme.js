@@ -340,12 +340,12 @@ function parseUserOptionsAndScan (options, done) {
 
   if (options) {
     if (options.path) {
+      if (typeof options.path !== 'string') throw new TypeError('path must be a string.');
       args.path = options.path;
     }
 
-    if (options.ignored_directories &&
-        Array.isArray(options.ignored_directories) &&
-        options.ignored_directories.length) {
+    if (options.ignored_directories) {
+      if (!Array.isArray(options.ignored_directories)) throw new TypeError('ignored_directories must be an array');
       args.ignored_directories = options.ignored_directories;
     }
 
@@ -360,7 +360,7 @@ function parseUserOptionsAndScan (options, done) {
     }
 
     if (options.line_length_limit) {
-      if (options.line_length_limit <= 0) throw new RangeError('line_length_limit must be greater than 0');
+      if (options.line_length_limit <= 0) throw new RangeError('line_length_limit must be greater than 0.');
       args.line_length_limit = options.line_length_limit;
     }
 
