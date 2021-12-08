@@ -267,7 +267,7 @@ function scanAndProcessMessages (options, done) {
 
   stream
     .pipe(eventStream.map(function (fileInformation, callback) {
-      let input                 = fs.createReadStream(fileInformation.fullPath, { encoding: options.fileEncoding }),
+      let input                 = fs.createReadStream(fileInformation.fullPath, { encoding: options.file_encoding }),
         // lineStream            = byline.createStream(input, { encoding: fileEncoding }),
         fileMessages          = { path: null, total_lines: 0, messages: [] },
         currentFileLineNumber = 1;
@@ -349,13 +349,16 @@ function parseUserOptionsAndScan (options, done) {
       args.ignored_directories = options.ignored_directories;
     }
 
-    if (options.file_patterns &&
-        Array.isArray(options.file_patterns) &&
-        options.file_patterns.length) {
+    if (options.file_patterns) {
+      if (!Array.isArray(options.file_patterns) ||
+      options.file_patterns.filter(x => typeof x !== 'string').length !== 0)
+        throw new TypeError('file_patterns must be an array of strings.');
+      if (!options.file_patterns.length) throw new Error('file_patterns cannot be empty.');
       args.file_patterns = options.file_patterns;
     }
 
     if (options.file_encoding) {
+      if (typeof options.file_encoding !== 'string') throw new TypeError('file_encoding must be a string.');
       args.file_encoding = options.file_encoding;
     }
 
