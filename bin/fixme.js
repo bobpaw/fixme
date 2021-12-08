@@ -367,9 +367,10 @@ function parseUserOptionsAndScan (options, done) {
       args.line_length_limit = options.line_length_limit;
     }
 
-    if (options.skip &&
-        Array.isArray(options.skip) &&
-        options.skip.length) {
+    if (options.skip) {
+      if (!Array.isArray(options.skip) ||
+        options.skip.filter(x => typeof x !== 'string').length !== 0)
+        throw new TypeError('skip must be an array of strings.');
       args.skip = options.skip;
     }
   }

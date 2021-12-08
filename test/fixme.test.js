@@ -61,6 +61,15 @@ describe('fixme', () => {
       it('should skip a verb (take a string)');
       it('should skip verbs (take an array)');
       it('should ignore unknown values');
+      it('should not accept a non-array', () => {
+        expect(() => fixme({skip: 40})).to.throw(TypeError, /skip/);
+        expect(() => fixme({skip: 'hey'})).to.throw(TypeError, /skip/);
+        expect(() => fixme({skip: {foo: 'bar'}})).to.throw(TypeError, /skip/);
+      });
+      it('should not accept an array of non-strings', () => {
+        expect(() => fixme({skip: [1, 2, 3]})).to.throw(TypeError, /skip/);
+        expect(() => fixme({skip: [{foo: 'bar'}, {bar: 'foo'}]})).to.throw(TypeError, /skip/);
+      });
     });
   });
 
