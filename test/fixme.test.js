@@ -13,11 +13,8 @@ chalk.level = 0;
 
 describe('fixme', () => {
   describe('options', () => {
-    let options;
-    
     beforeEach(() => {
       sinon.stub(console, 'log');
-      options = {};
     });
 
     afterEach(() => {
@@ -27,36 +24,76 @@ describe('fixme', () => {
     describe('path', () => {
       it('should accept a string');
       it('should not accept a number', () => {
-        options.path = 4;
-
-        expect(fixme(options)).to.throw(TypeError);
+        expect(() => fixme({path: 4})).to.throw(TypeError, /path/);
       });
     });
     describe('ignored_directories', () => {
       it('should accept an array');
       it('should accept a string');
-      it('should not except a number');
+      it('should not accept a number', () => {
+        expect(() => fixme({ignored_directories: 30})).to.throw(TypeError, /ignored_directories/);
+      });
     });
     describe('file_patterns', () => {
       it('should accept an array');
       it('should accept a string');
-      it('should not accept a number');
+      it('should not accept a number', () => {
+        expect(() => fixme({file_patterns: 15})).to.throw(TypeError, /file_patterns/);
+      });
     });
     describe('file_encoding', () => {
+      it('should accept a string');
+      it('should not accept an array', () => {
+        expect(() => fixme({file_encoding: [0, 1, 2]})).to.throw(TypeError, /file_encoding/);
+      });
+      it('should not accept a number', () => {
+        expect(() => fixme({file_encoding: 10})).to.throw(TypeError, /file_encoding/);
+      });
       it('should do something?');
     });
     describe('line_length_limit', () => {
       it('should stop after the limit');
       it('should not accept negative values', () => {
-        options.line_length_limit = -40;
-
-        expect(fixme(options)).to.throw(RangeError);
+        expect(() => fixme({line_length_limit: -40})).to.throw(RangeError, /line_length_limit/);
       });
     });
     describe('skip', () => {
-      it('should skip a verb (take a string)');
+      it('should skip a verb (take a string)', (done) => {
+        const options = {
+          'path': path.join(__dirname, 'cases', 'valid'),
+          'file_patterns': [ '**/verbs.txt' ]
+        };
+
+        fixme(options, () => {
+          expect(console.log.callCount).to.equal(8);
+
+          const messages = console.log.getCalls().map(c => c.args[0]);
+      
+          expect(messages[0]).to.equal('\n* verbs.txt [7 messages]:');
+
+          // TODO: Fix formatting here once it's changed in code.
+          expect(messages[1]).to.equal('  [Line  1]  ✐ NOTE: A note.');
+          expect(messages[2]).to.equal('  [Line  2]  ↻ OPTIMIZE: A possible optimization.');
+          expect(messages[3]).to.equal('  [Line  3]  ✓ TODO: A todo.');
+          expect(messages[4]).to.equal('  [Line  4]  ✄ HACK: A hack.');
+          expect(messages[5]).to.equal('  [Line  5]  ✗ XXX: An alternate fixme style.');
+          expect(messages[6]).to.equal('  [Line  6]  ☠ FIXME: A fixme.');
+          expect(messages[7]).to.equal('  [Line  7]  ☢ BUG: A bug.');
+
+          done();
+        });
+      });
       it('should skip verbs (take an array)');
       it('should ignore unknown values');
+      it('should not accept a non-array', () => {
+        expect(() => fixme({skip: 40})).to.throw(TypeError, /skip/);
+        expect(() => fixme({skip: 'hey'})).to.throw(TypeError, /skip/);
+        expect(() => fixme({skip: {foo: 'bar'}})).to.throw(TypeError, /skip/);
+      });
+      it('should not accept an array of non-strings', () => {
+        expect(() => fixme({skip: [1, 2, 3]})).to.throw(TypeError, /skip/);
+        expect(() => fixme({skip: [{foo: 'bar'}, {bar: 'foo'}]})).to.throw(TypeError, /skip/);
+      });
     });
   });
 
